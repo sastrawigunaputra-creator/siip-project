@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login - SIPP (Sistem Informasi Peminjaman Buku)</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div class="login-container">
+    <div class="login-card">
+      <div class="logo" style="justify-content: center; margin-bottom: 20px; color: #2c3e50;">
+        <div class="logo-icon" style="background: #3498db; color: white;">📚</div>
+        <span style="color: #2c3e50;">SIPP</span>
+      </div>
+      
+      <h1>Sistem Informasi Peminjaman Buku</h1>
+      <p>Perusahaan XYZ - Divisi Manajemen Aset</p>
+
+      <div class="demo-credentials">
+        <h4>🔐 Akun Demo</h4>
+        <p><strong>Admin:</strong> budi@company.com / admin123</p>
+        <p><strong>User:</strong> andi@company.com / user123</p>
+        <p style="font-size: 12px; margin-top: 8px; color: #7f8c8d;">*Gunakan akun di atas untuk login demo</p>
+      </div>
+
+      <form id="loginForm">
+        <div class="form-group">
+          <label for="email">Email</label>
+          <input type="email" id="email" name="email" placeholder="Contoh: budi@company.com" required>
+        </div>
+
+        <div class="form-group">
+          <label for="password">Password</label>
+          <input type="password" id="password" name="password" placeholder="Masukkan password" required>
+        </div>
+
+        <div class="form-group" style="margin-bottom: 0;">
+          <label style="display: flex; align-items: center; font-weight: normal;">
+            <input type="checkbox" style="width: auto; margin-right: 8px;">
+            Ingat saya
+          </label>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Masuk</button>
+      </form>
+
+      <div style="margin-top: 20px; padding-top: 20px; border-top: 1px solid #ecf0f1; text-align: center; font-size: 13px; color: #7f8c8d;">
+        <p>Hubungi admin jika ada pertanyaan</p>
+        <p style="margin: 8px 0;">📞 Ext. 1234 | 📧 admin@company.com</p>
+      </div>
+    </div>
+  </div>
+
+  <script src="data/database.js"></script>
+  <script src="js/utils.js"></script>
+  <script src="js/auth.js"></script>
+</body>
+</html>

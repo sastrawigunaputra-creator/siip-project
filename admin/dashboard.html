@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard Admin - SIPP</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+  <header>
+    <div class="header-content">
+      <button class="hamburger-menu" id="sidebarToggle" onclick="toggleSidebar()">☰</button>
+    </div>
+  </header>
+
+  <div class="main-layout">
+    <aside class="sidebar" id="mainSidebar">
+      <div class="sidebar-header">
+        <div class="logo">
+          <div class="logo-icon">📚</div>
+          <span>SIPP</span>
+        </div>
+      </div>
+      
+      <div class="user-info-sidebar">
+        <div class="user-details">
+          <strong id="userName">-</strong><br>
+          <small id="userRole">-</small>
+        </div>
+        <div class="user-menu">
+          <button onclick="toggleUserMenu()">⚙️</button>
+          <div class="dropdown-menu">
+            <a href="#" onclick="handleLogout()">🚪 Logout</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="menu-label">Menu Navigasi</div>
+      <ul class="sidebar-menu" id="sidebarMenu">
+        <li><a href="#" class="active" onclick="selectMenu(event, 'dashboard')">
+          <span class="icon">📊</span>
+          <span class="label">Dashboard</span>
+        </a></li>
+        <li><a href="#" onclick="selectMenu(event, 'master-buku')">
+          <span class="icon">📖</span>
+          <span class="label">Master Buku</span>
+        </a></li>
+        <li><a href="#" onclick="selectMenu(event, 'master-pegawai')">
+          <span class="icon">👥</span>
+          <span class="label">Master Pegawai</span>
+        </a></li>
+        <li><a href="#" onclick="selectMenu(event, 'transaksi-pinjam')">
+          <span class="icon">📤</span>
+          <span class="label">Input Peminjaman</span>
+        </a></li>
+        <li><a href="#" onclick="selectMenu(event, 'transaksi-kembali')">
+          <span class="icon">📥</span>
+          <span class="label">Input Pengembalian</span>
+        </a></li>
+        <li><a href="#" onclick="selectMenu(event, 'laporan')">
+          <span class="icon">📋</span>
+          <span class="label">Laporan</span>
+        </a></li>
+        <li><a href="#" onclick="selectMenu(event, 'audit')">
+          <span class="icon">🔍</span>
+          <span class="label">Audit Trail</span>
+        </a></li>
+      </ul>
+    </aside>
+
+    <main class="main-content">
+      <!-- DASHBOARD SECTION -->
+      <section id="dashboard" class="content-section">
+        <div class="dashboard-header">
+          <h2>Dashboard Admin</h2>
+          <p>Selamat datang di Sistem Informasi Peminjaman Buku Perusahaan</p>
+        </div>
+
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-label">Total Buku</div>
+            <div class="stat-value" id="totalBuku">-</div>
+            <div class="stat-subtitle">Stok keseluruhan</div>
+          </div>
+          <div class="stat-card warning">
+            <div class="stat-label">Buku Tersedia</div>
+            <div class="stat-value" id="bukuTersedia">-</div>
+            <div class="stat-subtitle">Stok > 0</div>
+          </div>
+          <div class="stat-card danger">
+            <div class="stat-label">Peminjaman Aktif</div>
+            <div class="stat-value" id="peminjamanAktif">-</div>
+            <div class="stat-subtitle">Belum dikembalikan</div>
+          </div>
+          <div class="stat-card danger">
+            <div class="stat-label">Overdue</div>
+            <div class="stat-value" id="peminjamanOverdue">-</div>
+            <div class="stat-subtitle">Terlambat</div>
+          </div>
+          <div class="stat-card success">
+            <div class="stat-label">Total Pegawai</div>
+            <div class="stat-value" id="totalPegawai">-</div>
+            <div class="stat-subtitle">Pengguna sistem</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Total Denda</div>
+            <div class="stat-value" id="totalDenda">-</div>
+            <div class="stat-subtitle">Rp (Semua waktu)</div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <h3>Aktivitas Terbaru</h3>
+          </div>
+          <div class="card-body">
+            <table class="table-responsive">
+              <thead>
+                <tr>
+                  <th>Waktu</th>
+                  <th>User</th>
+                  <th>Aksi</th>
+                  <th>Module</th>
+                  <th>Keterangan</th>
+                </tr>
+              </thead>
+              <tbody id="auditTableBody">
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- MASTER BUKU SECTION -->
+      <section id="master-buku" class="content-section" style="display: none;">
+        <div class="card">
+          <div class="card-header">
+            <h3>Master Data Buku</h3>
+            <button class="btn btn-primary btn-sm" onclick="showAddBukuModal()">+ Tambah Buku</button>
+          </div>
+          <div class="card-body">
+            <table class="table-responsive">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Judul</th>
+                  <th>Penulis</th>
+                  <th>Penerbit</th>
+                  <th>Stok</th>
+                  <th>Status</th>
+                  <th>Aksi</th>
+                </tr>
+              </thead>
+              <tbody id="bukuTableBody">
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- MASTER PEGAWAI SECTION -->
+      <section id="master-pegawai" class="content-section" style="display: none;">
+        <div class="card">
+          <div class="card-header">
+            <h3>Master Data Pegawai</h3>
+            <button class="btn btn-primary btn-sm" onclick="showAddPegawaiModal()">+ Tambah Pegawai</button>
+          </div>
+          <div class="card-body">
+            <table class="table-responsive">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Nama</th>
+                  <th>Jabatan</th>
+                  <th>Departemen</th>
+                  <th>No. Telepon</th>
+                  <th>Aksi</th>
+                </tr>
+              </thead>
+              <tbody id="pegawaiTableBody">
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- TRANSAKSI PEMINJAMAN SECTION -->
+      <section id="transaksi-pinjam" class="content-section" style="display: none;">
+        <div class="card">
+          <div class="card-header">
+            <h3>Input Transaksi Peminjaman</h3>
+          </div>
+          <div class="card-body">
+            <form id="formPeminjaman">
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="pegawaiPinjam">Pegawai Peminjam *</label>
+                  <select id="pegawaiPinjam" required>
+                    <option value="">-- Pilih Pegawai --</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label for="bukuPinjam">Buku *</label>
+                  <select id="bukuPinjam" required>
+                    <option value="">-- Pilih Buku --</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="tanggalPinjam">Tanggal Pinjam *</label>
+                  <input type="date" id="tanggalPinjam" required>
+                </div>
+                <div class="form-group">
+                  <label for="tanggalJatuhTempo">Tanggal Jatuh Tempo</label>
+                  <input type="date" id="tanggalJatuhTempo" readonly>
+                </div>
+              </div>
+
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="catatanPinjam">Catatan</label>
+                  <textarea id="catatanPinjam"></textarea>
+                </div>
+              </div>
+
+              <div class="form-actions">
+                <button type="submit" class="btn btn-success">💾 Simpan Peminjaman</button>
+                <button type="reset" class="btn btn-secondary">🔄 Reset</button>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <div class="card" style="margin-top: 30px;">
+          <div class="card-header">
+            <h3>Daftar Peminjaman Aktif</h3>
+          </div>
+          <div class="card-body">
+            <table class="table-responsive">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Pegawai</th>
+                  <th>Buku</th>
+                  <th>Tgl Pinjam</th>
+                  <th>Jatuh Tempo</th>
+                  <th>Status</th>
+                  <th>Aksi</th>
+                </tr>
+              </thead>
+              <tbody id="peminjamanAktifTableBody">
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- TRANSAKSI PENGEMBALIAN SECTION -->
+      <section id="transaksi-kembali" class="content-section" style="display: none;">
+        <div class="card">
+          <div class="card-header">
+            <h3>Input Transaksi Pengembalian</h3>
+          </div>
+          <div class="card-body">
+            <form id="formPengembalian">
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="peminjamanKembali">Peminjaman *</label>
+                  <select id="peminjamanKembali" required>
+                    <option value="">-- Pilih Peminjaman Aktif --</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label for="tanggalKembali">Tanggal Kembali Realisasi *</label>
+                  <input type="date" id="tanggalKembali" required>
+                </div>
+              </div>
+
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="dendaKembali">Denda (Otomatis)</label>
+                  <input type="text" id="dendaKembali" readonly>
+                </div>
+                <div class="form-group">
+                  <label for="hariTerlambat">Hari Terlambat</label>
+                  <input type="text" id="hariTerlambat" readonly>
+                </div>
+              </div>
+
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="catatanKembali">Catatan</label>
+                  <textarea id="catatanKembali"></textarea>
+                </div>
+              </div>
+
+              <div class="form-actions">
+                <button type="submit" class="btn btn-success">💾 Proses Pengembalian</button>
+                <button type="reset" class="btn btn-secondary">🔄 Reset</button>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <div class="card" style="margin-top: 30px;">
+          <div class="card-header">
+            <h3>Riwayat Pengembalian</h3>
+          </div>
+          <div class="card-body">
+            <table class="table-responsive">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Pegawai</th>
+                  <th>Buku</th>
+                  <th>Tgl Kembali</th>
+                  <th>Denda</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody id="pengembalianTableBody">
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- LAPORAN SECTION -->
+      <section id="laporan" class="content-section" style="display: none;">
+        <div class="stats-grid">
+          <button class="stat-card" onclick="generateLaporanStok()" style="cursor: pointer; text-align: center;">
+            <div class="stat-label">📊 Laporan Stok Buku</div>
+            <div class="stat-value">📖</div>
+            <div class="stat-subtitle">Klik untuk generate</div>
+          </button>
+          <button class="stat-card" onclick="generateLaporanOverdue()" style="cursor: pointer; text-align: center;">
+            <div class="stat-label">⚠️ Laporan Overdue</div>
+            <div class="stat-value">📋</div>
+            <div class="stat-subtitle">Klik untuk generate</div>
+          </button>
+          <button class="stat-card" onclick="generateLaporanRiwayat()" style="cursor: pointer; text-align: center;">
+            <div class="stat-label">📝 Laporan Riwayat</div>
+            <div class="stat-value">📚</div>
+            <div class="stat-subtitle">Klik untuk generate</div>
+          </button>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <h3 id="laporanTitle">Laporan Stok Buku</h3>
+            <div>
+              <button class="btn btn-info btn-sm" onclick="printLaporan('laporanContent')">🖨️ Print</button>
+              <button class="btn btn-success btn-sm" onclick="exportLaporanCSV('laporanContent', 'laporan')">📥 Export CSV</button>
+            </div>
+          </div>
+          <div class="card-body">
+            <table class="table-responsive" id="laporanContent">
+              <thead id="laporanHead">
+                <tr>
+                  <th>ID</th>
+                  <th>Judul</th>
+                  <th>Penulis</th>
+                  <th>Stok Awal</th>
+                  <th>Stok Tersedia</th>
+                  <th>Stok Dipinjam</th>
+                </tr>
+              </thead>
+              <tbody id="laporanBody">
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- AUDIT TRAIL SECTION -->
+      <section id="audit" class="content-section" style="display: none;">
+        <div class="card">
+          <div class="card-header">
+            <h3>Audit Trail - Log Aktivitas Sistem</h3>
+            <button class="btn btn-success btn-sm" onclick="exportAuditLog()">📥 Export CSV</button>
+          </div>
+          <div class="card-body">
+            <table class="table-responsive">
+              <thead>
+                <tr>
+                  <th>Waktu</th>
+                  <th>User ID</th>
+                  <th>Aksi</th>
+                  <th>Module</th>
+                  <th>Deskripsi</th>
+                  <th>Detail</th>
+                </tr>
+              </thead>
+              <tbody id="auditLogBody">
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- MODAL TAMBAH/EDIT BUKU -->
+  <div id="modalBuku" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 id="modalBukuTitle">Tambah Buku Baru</h2>
+        <button class="modal-close" onclick="closeModal('modalBuku')">×</button>
+      </div>
+      <form id="formBuku">
+        <div class="form-group">
+          <label for="bukuTitle">Judul Buku *</label>
+          <input type="text" id="bukuTitle" required>
+        </div>
+        <div class="form-group">
+          <label for="bukuAuthor">Penulis *</label>
+          <input type="text" id="bukuAuthor" required>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="bukuPublisher">Penerbit *</label>
+            <input type="text" id="bukuPublisher" required>
+          </div>
+          <div class="form-group">
+            <label for="bukuYear">Tahun Terbit *</label>
+            <input type="number" id="bukuYear" min="1900" required>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="bukuISBN">ISBN</label>
+            <input type="text" id="bukuISBN">
+          </div>
+          <div class="form-group">
+            <label for="bukuStock">Stok *</label>
+            <input type="number" id="bukuStock" min="0" required>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="bukuCategory">Kategori</label>
+          <input type="text" id="bukuCategory">
+        </div>
+        <div class="form-actions">
+          <button type="submit" class="btn btn-success">💾 Simpan</button>
+          <button type="button" class="btn btn-secondary" onclick="closeModal('modalBuku')">Batal</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL TAMBAH/EDIT PEGAWAI -->
+  <div id="modalPegawai" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 id="modalPegawaiTitle">Tambah Pegawai Baru</h2>
+        <button class="modal-close" onclick="closeModal('modalPegawai')">×</button>
+      </div>
+      <form id="formPegawai">
+        <div class="form-group">
+          <label for="pegawaiName">Nama *</label>
+          <input type="text" id="pegawaiName" required>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="pegawaiPosition">Jabatan *</label>
+            <input type="text" id="pegawaiPosition" required>
+          </div>
+          <div class="form-group">
+            <label for="pegawaiDept">Departemen *</label>
+            <input type="text" id="pegawaiDept" required>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="pegawaiPhone">No. Telepon *</label>
+            <input type="tel" id="pegawaiPhone" required>
+          </div>
+          <div class="form-group">
+            <label for="pegawaiEmail">Email</label>
+            <input type="email" id="pegawaiEmail">
+          </div>
+        </div>
+        <div class="form-actions">
+          <button type="submit" class="btn btn-success">💾 Simpan</button>
+          <button type="button" class="btn btn-secondary" onclick="closeModal('modalPegawai')">Batal</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL STRUK PEMINJAMAN -->
+  <div id="modalStruk" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>📄 Struk Peminjaman</h2>
+        <button class="modal-close" onclick="closeModal('modalStruk')">×</button>
+      </div>
+      <div id="strukContent" class="card-body">
+      </div>
+      <div class="form-actions">
+        <button type="button" class="btn btn-info" onclick="printHalaman('strukturContent', 'Struk Peminjaman')">🖨️ Print</button>
+        <button type="button" class="btn btn-secondary" onclick="closeModal('modalStruk')">Tutup</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="../data/database.js"></script>
+  <script src="../js/utils.js"></script>
+  <script src="../js/auth.js"></script>
+  <script src="../js/admin.js"></script>
+</body>
+</html>
